@@ -1,0 +1,412 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="Spico.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="700"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
+
+            <phone:Pivot x:Name="mainPivot" SelectionChanged="mainPivot_SelectionChanged" Title="Spico" Margin="0,0,0,50">
+
+                <phone:Pivot.TitleTemplate>
+                    <DataTemplate>
+                        <Grid Margin="-20,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="80"/>
+
+                            </Grid.ColumnDefinitions>
+                            <Image Source="Assets/logo_transp.png" Grid.Column="0"/>
+                            <Image  Name="settingIcon" Tap="settingIcon_Tap" Source="Assets/settings.png" Margin="15" Grid.Column="2"/>
+                            <Image Name="helpIcon" Tap="helpIcon_Tap" Source="Assets/help.png" Margin="15" Grid.Column="3"/>
+
+                            <TextBlock VerticalAlignment="Center"  Grid.Column="1" FontSize="30" Foreground="#6CA8D1" Text="{Binding}" />
+                        </Grid>
+                    </DataTemplate>
+                </phone:Pivot.TitleTemplate>
+                <phone:Pivot.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid>
+                           
+                            <TextBlock FontSize="50" Margin="0,20,0,0" Foreground="Orange" Text="{Binding}" />
+                        </Grid>
+                    </DataTemplate>
+                </phone:Pivot.HeaderTemplate>
+                <!--Pivot item one-->
+                <phone:PivotItem Header="Pelat 1" x:Name="first">
+                    <Grid>
+                        <Image Name="plate1" Source="/Assets/plate/Ishihara-Plate-01-38.jpg"/>
+                            <Image Visibility="Collapsed" Name="speech1" Source="/Assets/speech.png" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech1" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+                        <TextBlock Name="stateMessage" FontSize="20" VerticalAlignment="Bottom" Foreground="Gray" HorizontalAlignment="Center"/>
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item two-->
+                <phone:PivotItem Header="Pelat 2" x:Name="secondPlate">
+                    <Grid>
+                        <Image Name="plate2" Source="/Assets/plate/Ishihara-Plate-02-38.jpg"/>
+                        <Image Visibility="Collapsed"  Source="/Assets/speech.png" Name="speech2" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech2" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item three-->
+
+                <phone:PivotItem Header="Pelat 3">
+                    <Grid>
+                        <Image Name="plate3" Source="/Assets/plate/Ishihara-Plate-03-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech3" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech3" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item four-->
+                <phone:PivotItem Header="Pelat 4">
+                    <Grid>
+                        <Image Name="plate4" Source="/Assets/plate/Ishihara-Plate-04-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech4" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech4" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item five-->
+
+                <phone:PivotItem Header="Pelat 5">
+                    <Grid>
+                        <Image Name="plate5" Source="/Assets/plate/Ishihara-Plate-05-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech5" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech5" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item six-->
+                <phone:PivotItem Header="Pelat 6">
+                    <Grid>
+                        <Image Name="plate6" Source="/Assets/plate/Ishihara-Plate-06-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech6" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech6" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item seven-->
+
+                <phone:PivotItem Header="Pelat 7">
+                    <Grid>
+                        <Image Name="plate7" Source="/Assets/plate/Ishihara-Plate-07-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech7" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech7" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item eight-->
+                <phone:PivotItem Header="Pelat 8">
+                    <Grid>
+                        <Image Name="plate8" Source="/Assets/plate/Ishihara-Plate-08-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech8" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech8" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item nine-->
+
+                <phone:PivotItem Header="Pelat 9">
+                    <Grid>
+                        <Image Name="plate9" Source="/Assets/plate/Ishihara-Plate-09-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech9" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech9" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item ten-->
+                <phone:PivotItem Header="Pelat 10">
+                    <Grid>
+                        <Image Name="plate10" Source="/Assets/plate/Ishihara-Plate-10-38.jpg"/>
+                        <Image  Visibility="Collapsed" Source="/Assets/speech.png" Name="speech10" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech10" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item eleven-->
+
+                <phone:PivotItem Header="Pelat 11">
+                    <Grid>
+                        <Image Name="plate11" Source="/Assets/plate/Ishihara-Plate-11-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech11" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech11" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item twelve-->
+
+                <phone:PivotItem Header="Pelat 12">
+                    <Grid>
+                        <Image Name="plate12" Source="/Assets/plate/Ishihara-Plate-12-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech12" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech12" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item thirteen-->
+                <phone:PivotItem Header="Pelat 13">
+                    <Grid>
+                        <Image Name="plate13" Source="/Assets/plate/Ishihara-Plate-13-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech13" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech13" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item fourteen-->
+
+                <phone:PivotItem Header="Pelat 14">
+                    <Grid>
+                        <Image Name="plate14" Source="/Assets/plate/Ishihara-Plate-14-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech14" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech14" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item fifteen-->
+                <phone:PivotItem Header="Pelat 15">
+                    <Grid>
+                        <Image Name="plate15" Source="/Assets/plate/Ishihara-Plate-15-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech15" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech15" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item sixteen-->
+                <phone:PivotItem Header="Pelat 16">
+                    <Grid>
+                        <Image Name="plate16" Source="/Assets/plate/Ishihara-Plate-16-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech16" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech16" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item seventeen-->
+
+                <phone:PivotItem Header="Pelat 17">
+                    <Grid>
+                        <Image Name="plate17" Source="/Assets/plate/Ishihara-Plate-17-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech17" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech17" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem Header="Pelat 18">
+                    <Grid>
+                        <Image Name="plate18" Source="/Assets/plate/Ishihara-Plate-18-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech18" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech18" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem Header="Pelat 19">
+                    <Grid>
+                        <Image Name="plate19" Source="/Assets/plate/Ishihara-Plate-19-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech19" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech19" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem Header="Pelat 20">
+                    <Grid>
+                        <Image Name="plate20" Source="/Assets/plate/Ishihara-Plate-20-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech20" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech20" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem Header="Pelat 21">
+                    <Grid>
+                        <Image Name="plate21" Source="/Assets/plate/Ishihara-Plate-21-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech21" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech21" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+
+
+                <!--Pivot item nineteen-->
+
+                
+
+                <!--Pivot item twenty two-->
+                <phone:PivotItem Header="Pelat 22">
+                    <Grid>
+                        <Image Name="plate22" Source="/Assets/plate/Ishihara-Plate-22-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech22" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech22" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item twenty three-->
+                <phone:PivotItem Header="Pelat 23">
+                    <Grid>
+                        <Image Name="plate23" Source="/Assets/plate/Ishihara-Plate-23-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech23" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech23" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <!--Pivot item twenty four-->
+                <phone:PivotItem Header="Pelat 24">
+                    <Grid>
+                    <Image Name="plate24" Source="/Assets/plate/Ishihara-Plate-24-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech24" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech24" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem Header="Pelat 25">
+                    <Grid>
+                        <Image Name="plate25" Source="/Assets/plate/Ishihara-Plate-25-38.jpg"/>
+                        <Image Visibility="Collapsed" Source="/Assets/speech.png" Name="speech25" Height="300"/>
+                        <TextBlock Visibility="Collapsed" Name="textSpeech25" Padding="0,50" VerticalAlignment="Bottom" Text="Sedang mendengar suara Anda" Foreground="#6CA8D1" FontSize="24" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                </phone:PivotItem>
+                <phone:PivotItem Header="Hasil" Name="last">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Name="resultGreet" FontSize="40" Foreground="#FD5711"  HorizontalAlignment="Center"/>
+                            <TextBlock Name="resultExplanation" FontSize="25" Foreground="Gray" TextWrapping="Wrap" Margin="12,10,0,0" />
+                            <TextBlock Name="resultAdvice" FontSize="25" Margin="12,20,0,0" Foreground="Gray"  TextWrapping="Wrap"/>
+
+                            <HyperlinkButton Click="HyperlinkButton_Click" Content="Rincian Hasil Test" FontSize="25" Margin="0,10,0,0" Foreground="#6CA8D1" HorizontalAlignment="Left"/>
+                            <Button BorderBrush="#6CA8D1" VerticalAlignment="Bottom" Content="Tes Ulang" x:Name="retest" Click="retest_Click" Foreground="White" Background="#6CA8D1"/>
+
+                        </StackPanel>
+                    </Grid>
+                   
+                </phone:PivotItem>
+                <phone:PivotItem Header="Rincian Hasil Tes" Name="resultDetail">
+                    <ScrollViewer>
+
+                        <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Margin="12,0,0,0">
+                            <StackPanel>
+
+                                <TextBlock Text="Pelat 1" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 2" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 3" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 4" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 5" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 6" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 7" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 8" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 9" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 10" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 11" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 12" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 13" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 14" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 15" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 16" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 17" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 18" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 19" FontSize="30" Foreground="Gray"/>
+                                <TextBlock Text="Pelat 20" FontSize="30" Foreground="Gray"/>
+
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="12,0,0,0">
+
+                                <StackPanel>
+                                <TextBlock Name="resultPlate1" FontSize="30" Text="Normal" Foreground="Green"/>
+                                <TextBlock Name="resultPlate2" FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate3"  FontSize="30" Text="Normal" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate4"  FontSize="30" Text="Abnormal"  Foreground="Red"/>
+                                    <TextBlock Name="resultPlate5"  FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate6"  FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate7"  FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate8"  FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate9"  FontSize="30"  Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate10"  FontSize="30" Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate11"  FontSize="30"  Text="Abnormal" Foreground="Red"/>
+                                    <TextBlock Name="resultPlate12"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate13"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate14"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate15"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate16"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate17"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate18"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate19"  FontSize="30" Foreground="Green"/>
+                                    <TextBlock Name="resultPlate20"  FontSize="30" Foreground="Green"/>
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Grid>
+                    </ScrollViewer>
+
+                </phone:PivotItem>
+            </phone:Pivot>
+
+        </Grid>
+        <Grid x:Name="speechRow" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox InputScope="Number" Grid.Column="0" Foreground="Black" Background="LightGray" x:Name="resultText" Margin="-10,-10,-10,-10" Grid.ColumnSpan="2"/>
+            <Grid Grid.Column="1" Margin="5" Background="#6CA8D1">
+                <Image x:Name="micType" Margin="10" Tap="mic_Tap"/>
+            </Grid>
+        </Grid>
+        <Grid x:Name="retestGrid" Visibility="Collapsed" Grid.Row="1">
+            <Button BorderBrush="#6CA8D1" VerticalAlignment="Bottom" Content="Tes Ulang" x:Name="retestBtn" Click="retest_Click" Foreground="White" Background="#6CA8D1"/>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>
