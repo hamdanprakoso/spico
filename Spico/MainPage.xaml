@@ -363,27 +363,33 @@
                         <Grid Grid.Column="1" Margin="12,0,0,0">
 
                                 <StackPanel>
-                                <TextBlock Name="resultPlate1" FontSize="30" Text="Normal" Foreground="Green"/>
-                                <TextBlock Name="resultPlate2" FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate3"  FontSize="30" Text="Normal" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate4"  FontSize="30" Text="Abnormal"  Foreground="Red"/>
-                                    <TextBlock Name="resultPlate5"  FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate6"  FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate7"  FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate8"  FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate9"  FontSize="30"  Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate10"  FontSize="30" Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate11"  FontSize="30"  Text="Abnormal" Foreground="Red"/>
-                                    <TextBlock Name="resultPlate12"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate13"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate14"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate15"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate16"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate17"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate18"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate19"  FontSize="30" Foreground="Green"/>
-                                    <TextBlock Name="resultPlate20"  FontSize="30" Foreground="Green"/>
-                            </StackPanel>
+                                <TextBlock Name="resultPlate1" FontSize="30" />
+                                <TextBlock Name="resultPlate2" FontSize="30" />
+                                    <TextBlock Name="resultPlate3"  FontSize="30" />
+                                    <TextBlock Name="resultPlate4"  FontSize="30" />
+                                    <TextBlock Name="resultPlate5"  FontSize="30" />
+                                    <TextBlock Name="resultPlate6"  FontSize="30" />
+                                    <TextBlock Name="resultPlate7"  FontSize="30" />
+                                    <TextBlock Name="resultPlate8"  FontSize="30"/>
+                                    <TextBlock Name="resultPlate9"  FontSize="30"  />
+                                    <TextBlock Name="resultPlate10"  FontSize="30" />
+                                    <TextBlock Name="resultPlate11"  FontSize="30"  />
+                                    <TextBlock Name="resultPlate12"  FontSize="30" />
+                                    <TextBlock Name="resultPlate13"  FontSize="30" />
+                                    <TextBlock Name="resultPlate14"  FontSize="30" />
+                                    <TextBlock Name="resultPlate15"  FontSize="30"/>
+                                    <TextBlock Name="resultPlate16"  FontSize="30" />
+                                    <TextBlock Name="resultPlate17"  FontSize="30" />
+                                    <TextBlock Name="resultPlate18"  FontSize="30" />
+                                    <TextBlock Name="resultPlate19"  FontSize="30"/>
+                                    <TextBlock Name="resultPlate20"  FontSize="30"/>
+                                    <TextBlock Name="resultPlate21"  FontSize="30" />
+                                    <TextBlock Name="resultPlate22"  FontSize="30" />
+                                    <TextBlock Name="resultPlate23"  FontSize="30" />
+                                    <TextBlock Name="resultPlate24"  FontSize="30" />
+                                    <TextBlock Name="resultPlate25"  FontSize="30" />
+
+                                </StackPanel>
 
                         </Grid>
 

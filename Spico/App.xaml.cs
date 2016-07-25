@@ -6,6 +6,10 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Spico.Resources;
+using PocketSphinxRntComp;
+using Spico.Recorder;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Spico
 {
@@ -16,6 +20,25 @@ namespace Spico
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        private SpeechRecognizer speechRecognizer;
+
+
+        private enum RecognizerMode { Wakeup, Digits, Menu, Phones };
+
+        private RecognizerMode _mode;
+        private RecognizerMode Mode
+        {
+            get { return _mode; }
+            set
+            {
+                if (_mode != value)
+                {
+                    _mode = value;
+                    SetRecognizerMode(_mode);
+                }
+            }
+        }
 
         /// <summary>
         /// Constructor for the Application object.
@@ -61,7 +84,91 @@ namespace Spico
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            startRecognize();
+        }
 
+        private void startRecognize()
+        {
+            _mode = RecognizerMode.Digits;
+            LoadRecognitionAsync(false);
+        }
+
+        private async void LoadRecognitionAsync(bool v)
+        {
+    
+            //ContentPanel.IsHitTestVisible = false;
+
+            //plate1.Visibility = Visibility.Collapsed;
+            //stateMessage.Text = "Sedang memuat komponen speech recognition";
+
+
+            //// Initializing
+            await InitialzeSpeechRecognizerForContinuous();
+            SetRecognizerMode(Mode);
+
+
+            //// UI            
+            //ContentPanel.IsHitTestVisible = true;
+            //plate1.Visibility = Visibility.Visible;
+            //stateMessage.Text = "";
+
+            // Set innitial UI state
+            
+                Mode = RecognizerMode.Digits;
+            
+        }
+
+        private async Task InitialzeSpeechRecognizerForContinuous()
+        {
+            List<string> initResults = new List<string>();
+
+            try
+            {
+                AudioContainer.SphinxSpeechRecognizer = new SpeechRecognizer();
+                speechRecognizer = AudioContainer.SphinxSpeechRecognizer;
+                     await Task.Run(() =>
+                    {
+                        var initResult = speechRecognizer.Initialize("\\Assets\\models\\hmm\\en-us", "\\Assets\\models\\dict\\cmu07a.dic");
+                        initResults.Add(initResult);
+                        //initResult = speechRecognizer.AddKeyphraseSearch(RecognizerMode.Wakeup.ToString(), WakeupText);
+                        //initResults.Add(initResult);
+                        //initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Menu.ToString(), "\\Assets\\models\\grammar\\menu.gram");
+                        //initResults.Add(initResult);
+                        initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Digits.ToString(), "\\Assets\\models\\grammar\\digits.gram");
+                        initResults.Add(initResult);
+                        //initResult = speechRecognizer.AddNgramSearch("forecast", "\\Assets\\models\\lm\\weather.dmp");
+                        //initResults.Add(initResult);
+                    });
+            }
+            catch (Exception ex)
+            {
+                var initResult = ex.Message;
+                initResults.Add(initResult);
+            }
+
+            foreach (var result in initResults)
+            {
+                Debug.WriteLine(result);
+            }
+        }
+
+        private void SetRecognizerMode(RecognizerMode mode)
+        {
+            try
+            {
+                string result = string.Empty;
+                speechRecognizer.StopProcessing();
+                Debug.WriteLine(result);
+                result = speechRecognizer.SetSearch(mode.ToString());
+                Debug.WriteLine(result);
+                speechRecognizer.StartProcessing();
+                Debug.WriteLine(result);
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         // Code to execute when the application is activated (brought to foreground)

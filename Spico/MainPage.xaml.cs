@@ -32,58 +32,39 @@ namespace Spico
     public partial class MainPage : PhoneApplicationPage
     {
 
-        #region Constant values
+      
 
-        private const string WakeupText = "oh mighty computer";
-
-        private string[] DigitValues = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-
-        private string[] MenuValues = new string[] { "digits", "forecast" };
-
-        #endregion
-
-        #region Properties
-
-        private RecognizerMode _mode;
-        private RecognizerMode Mode
-        {
-            get { return _mode; }
-            set
-            {
-                if (_mode != value)
-                {
-                    _mode = value;
-                    SetRecognizerMode(_mode);
-                }
-            }
-        }
-
-        #endregion
-
+ 
         #region Fields
 
         private SpeechRecognizer speechRecognizer;
 
         private WasapiAudioRecorder audioRecorder;
 
-        private enum RecognizerMode { Wakeup, Digits, Menu, Phones };
+        
 
-        private bool isPhonemeRecognitionEnabled;
-
-        public int rightAnswer;
-        public int possibleNormal;
-        public int countProtan;
-        public int countDeutan;
-        public string[] isRight;
-
-        public class SpeechRecognizerInitiated
-        {
-            public static bool isInitiated;
-        }
 
         public static int numberOfFailed;
 
         public static bool isSpeechActived;
+
+        public class Answers
+        {
+            public static int countRightAnswer { get; set; }
+            public static int absolutelyNormal { get; set; }
+            public static int possibleProtan { get; set; }
+            public static int possibleDeutan { get; set; }
+            public List<string> answerPlate { get; set; }
+
+        }
+
+        public class countFinalAnswer
+        {
+            public int numberRightAnswer { get; set; }
+            public int numberPossibleNormal { get; set; }
+            public int numberPossibleProtan { get; set; }
+            public int numberPossibleDeutan { get; set; }
+        }
 
         #endregion
 
@@ -121,1274 +102,69 @@ namespace Spico
                 micType.Source = bm;
             }
 
-                startRecognize();
+            AudioContainer.SphinxSpeechRecognizer = new SpeechRecognizer();
+            speechRecognizer = AudioContainer.SphinxSpeechRecognizer;
+
+            speechRecognizer.resultFound += speechRecognizer_resultFound;
+
+            speechRecognizer.resultFinalizedBySilence += speechRecognizer_resultFinalizedBySilence;
 
 
 
 
         }
 
-        
-
-        private async  void waitInitialize()
-        {
-            await InitialzeSpeechRecognizerForContinuous();
-
-        }
 
         private void OnBackKeyPress(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
 
             var mm = MessageBox.Show("Apakah Anda yakin akan keluar dari aplikasi ini ?", "Keluar", MessageBoxButton.OKCancel);
-            if(mm == MessageBoxResult.OK)
+            if (mm == MessageBoxResult.OK)
             {
                 Application.Current.Terminate();
             }
         }
-        #endregion
 
-        #region No using speech
-        private void notUsingSpeech()
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+            if (NavigationContext.QueryString.ContainsKey("item"))
+            {
+                var index = NavigationContext.QueryString["item"];
+                var indexParsed = int.Parse(index);
+                mainPivot.SelectedIndex = indexParsed;
+            }
+        }
+
+
+        #region SpeechRecognizer & Audio
+
+        public void FilterResult(string recognizedSpeech)
+        {
+            if(mainPivot.SelectedIndex ==0)
+            {
+               if (recognizedSpeech.Contains("one two")){
+                    resultText.Text = "12";
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
             
-
-            if (mainPivot.SelectedIndex == 0)
-            {
-                
-                if (resultText.Text == "dua belas" || resultText.Text == "12")
-                {
-                    playSound_RightAnswer();
-                    Answers.countRightAnswer++;
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=0", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 1)
-            {
-
-                
-                if (resultText.Text == "delapan" || resultText.Text == "8" || resultText.Text == "tiga" || resultText.Text == "3")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "delapan")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
-
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 2)
-            {
-               
-                if (resultText.Text == "enam" || resultText.Text == "6" || resultText.Text == "lima" || resultText.Text == "5")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "enam" || resultText.Text == "6")
-                    {
-                        Answers.countRightAnswer++;
-
-
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 3)
-            {
-                
-                    if (resultText.Text == "enam" || resultText.Text == "6")
-                if (resultText.Text == "dua puluh sembilan" || resultText.Text == "29" || resultText.Text == "tujuh puluh" || resultText.Text == "70")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "dua puluh sembilan" || resultText.Text == "29")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 4)
-            {
-               
-                if (resultText.Text == "lima puluh tujuh" || resultText.Text == "57" || resultText.Text == "tiga puluh lima" || resultText.Text == "35")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "lima puluh tujuh" || resultText.Text == "57")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
-
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 5)
-            {
-                
-                if (resultText.Text == "lima" || resultText.Text == "5" || resultText.Text == "dua" || resultText.Text == "2")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "lima" || resultText.Text == "5")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 6)
-            {
-                
-                if (resultText.Text == "tiga" || resultText.Text == "3" || resultText.Text == "lima" || resultText.Text == "5")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tiga" || resultText.Text == "3")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 7)
-            {
-               
-                if (resultText.Text == "lima belas" || resultText.Text == "15" || resultText.Text == "tujuh belas" || resultText.Text == "17")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "lima belas" || resultText.Text == "15")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                                        this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 8)
-            {
-               
-                if (resultText.Text == "tujuh puluh empat" || resultText.Text == "74" || resultText.Text == "dua puluh satu" || resultText.Text == "21")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tujuh puluh empat" || resultText.Text == "74")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 9)
-            {
-                
-                if (resultText.Text == "dua" || resultText.Text == "2" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "dua" || resultText.Text == "2")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                                        this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 10)
-            {
-               
-                if (resultText.Text == "enam" || resultText.Text == "6" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "enam" || resultText.Text == "6")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 11)
-            {
-               
-                if (resultText.Text == "sembilan puluh tujuh" || resultText.Text == "97" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "sembilan puluh tujuh" || resultText.Text == "97")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 12)
-            {
-                
-                if (resultText.Text == "empat puluh lima" || resultText.Text == "45" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "empat puluh lima" || resultText.Text == "45")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 13)
-            {
-              
-                if (resultText.Text == "lima" || resultText.Text == "5" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer(); 
-                    if (resultText.Text == "lima" || resultText.Text == "5")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 14)
-            {
-               
-                if (resultText.Text == "tujuh" || resultText.Text == "7" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tujuh" || resultText.Text == "7")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 15)
-            {
-                
-                if (resultText.Text == "enam belas" || resultText.Text == "16" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "enam belas" || resultText.Text == "16")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 16)
-            {
-               
-                if (resultText.Text == "tujuh puluh tiga" || resultText.Text == "73" || resultText.Text == "tidak ada")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tujuh puluh tiga" || resultText.Text == "73")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 17)
-            {
-               
-                if (resultText.Text == "tidak ada" || resultText.Text == "lima" || resultText.Text == "5")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 18)
-            {
-                
-                if (resultText.Text == "tidak ada" || resultText.Text == "dua" || resultText.Text == "2")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 19)
-            {
-              
-                if (resultText.Text == "tidak ada" || resultText.Text == "empat puluh lima" || resultText.Text == "45")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 20)
-            {
-              
-                if (resultText.Text == "tidak ada" || resultText.Text == "tujuh puluh tiga" || resultText.Text == "73")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 21)
-            {
-               
-                if (resultText.Text == "dua puluh enam" || resultText.Text == "26" || resultText.Text == "enam" || resultText.Text == "6" || resultText.Text == "dua" || resultText.Text == "2")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "dua puluh enam" || resultText.Text == "26")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "enam" || resultText.Text == "6")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "dua" || resultText.Text == "2")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 22)
-            {
-               
-                if (resultText.Text == "empat puluh dua" || resultText.Text == "dua" || resultText.Text == "empat")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "empat puluh dua" || resultText.Text == "42")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "dua" || resultText.Text == "2")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "empat" || resultText.Text == "4")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 23)
-            {
-                
-                if (resultText.Text == "tiga puluh lima" || resultText.Text == "35" || resultText.Text == "lima" || resultText.Text == "5" || resultText.Text == "tiga" || resultText.Text == "3")
-                {
-                    playSound_RightAnswer();
-                    if (resultText.Text == "tiga puluh lima" || resultText.Text == "35")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "lima" || resultText.Text == "5")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "tiga" || resultText.Text == "3")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
-
-                }
-            }
-            else if (mainPivot.SelectedIndex == 24)
-            {
-                
-                if (resultText.Text == "sembilan puluh enam" || resultText.Text == "96" || resultText.Text == "enam" || resultText.Text == "6" || resultText.Text == "sembilan" || resultText.Text == "9")
-                {
-                    playSound_RightAnswer();
-
-                    countFinalAnswer finalAnswer = new countFinalAnswer();
-
-                    if (resultText.Text == "sembilan puluh enam" || resultText.Text == "96")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "enam" || resultText.Text == "6")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "sembilan" || resultText.Text == "9")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-
-                    finalAnswer.numberRightAnswer = Answers.countRightAnswer;
-                    finalAnswer.numberPossibleNormal = Answers.absolutelyNormal;
-                    finalAnswer.numberPossibleProtan = Answers.possibleProtan;
-                    finalAnswer.numberPossibleDeutan = Answers.possibleDeutan;
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=25", UriKind.RelativeOrAbsolute));
-
-                }
-                else
-                {
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
-
-                }
-            }
         }
-        #endregion
-
-        private void fallBackScenario()
-        {
-            isSpeechActived = false;
-            BitmapImage bm = new BitmapImage(new Uri(@"Assets/Sent-96.png", UriKind.RelativeOrAbsolute));
-            micType.Source = bm;
-            resultText.Text = "";
-            resultText.Focus();
-
-            resultText.IsHitTestVisible = true;
-        }
-
-        #region using speech
-        private void usingSpeech()
-        {
-            if (mainPivot.SelectedIndex == 0)
-            {
-                
-                if (resultText.Text == "dua belas")
-                {
-                    Answers.countRightAnswer++;
-                    MainPage.numberOfFailed = 0;
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if(numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 1)
-            {
-                if (resultText.Text == "delapan" || resultText.Text == "tiga")
-                {
-                    if (resultText.Text == "delapan")
-                    {
-                        Answers.countRightAnswer++;
-                        isSpeechActived = true;
-
-                    }
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
-
-
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 2)
-            {
-               if (resultText.Text == "enam" || resultText.Text == "lima")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "enam")
-                    {
-                        Answers.countRightAnswer++;
-
-
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 3)
-            {
-                if (resultText.Text == "dua puluh sembilan" || resultText.Text == "tujuh puluh")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "dua puluh sembilan")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 4)
-            {
-                if (resultText.Text == "lima puluh tujuh" || resultText.Text == "tiga puluh lima")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "lima puluh tujuh")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 5)
-            {
-                if (resultText.Text == "lima" || resultText.Text == "dua")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "lima")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 6)
-            {
-                if (resultText.Text == "tiga" || resultText.Text == "lima")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tiga")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 7)
-            {
-                if (resultText.Text == "lima belas" || resultText.Text == "tujuh belas")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "lima belas")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 8)
-            {
-                if (resultText.Text == "tujuh puluh empat" || resultText.Text == "dua puluh satu")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tujuh puluh empat")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 9)
-            {
-                if (resultText.Text == "dua" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "dua")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 10)
-            {
-                if (resultText.Text == "enam" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "enam")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 11)
-            {
-                if (resultText.Text == "sembilan puluh tujuh" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "sembilan puluh tujuh")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 12)
-            {
-                if (resultText.Text == "empat puluh lima" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "empat puluh lima")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 13)
-            {
-                if (resultText.Text == "lima" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "lima")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 14)
-            {
-                 if (resultText.Text == "tujuh" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tujuh")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 15)
-            {
-                 if (resultText.Text == "enam belas" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "enam belas")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 16)
-            {
-                if (resultText.Text == "tujuh puluh tiga" || resultText.Text == "tidak ada")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tujuh puluh tiga")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 17)
-            {
-                if (resultText.Text == "tidak ada" || resultText.Text == "lima")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 18)
-            {
-                if (resultText.Text == "tidak ada" || resultText.Text == "dua")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 19)
-            {
-               if (resultText.Text == "tidak ada" || resultText.Text == "empat puluh lima")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 20)
-            {
-                if (resultText.Text == "tidak ada" || resultText.Text == "tujuh puluh tiga")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tidak ada")
-                    {
-                        Answers.countRightAnswer++;
-
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 21)
-            {
-                if (resultText.Text == "dua puluh enam" || resultText.Text == "enam" || resultText.Text == "dua")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "dua puluh enam")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "enam")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "dua")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 22)
-            {
-                if (resultText.Text == "empat puluh dua" || resultText.Text == "dua" || resultText.Text == "empat")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "empat puluh dua")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "dua")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "empat")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 23)
-            {
-              if (resultText.Text == "tiga puluh lima" || resultText.Text == "lima" || resultText.Text == "tiga")
-                {
-                    isSpeechActived = true;
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "tiga puluh lima")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "lima")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "tiga")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-            else if (mainPivot.SelectedIndex == 24)
-            {
-                if (resultText.Text == "sembilan puluh enam" || resultText.Text == "enam" || resultText.Text == "sembilan")
-                {
-                    isSpeechActived = true;
-
-                    countFinalAnswer finalAnswer = new countFinalAnswer();
-
-                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=25", UriKind.RelativeOrAbsolute));
-                    if (resultText.Text == "sembilan puluh enam")
-                    {
-                        Answers.absolutelyNormal++;
-                    }
-                    else if (resultText.Text == "enam")
-                    {
-                        Answers.possibleProtan++;
-                    }
-                    else if (resultText.Text == "sembilan")
-                    {
-                        Answers.possibleDeutan++;
-                    }
-
-                    finalAnswer.numberRightAnswer = Answers.countRightAnswer;
-                    finalAnswer.numberPossibleNormal = Answers.absolutelyNormal;
-                    finalAnswer.numberPossibleProtan = Answers.possibleProtan;
-                    finalAnswer.numberPossibleDeutan = Answers.possibleDeutan;
-
-                }
-                else
-                {
-                    stateMessage.Text = "Coba lagi";
-                    MainPage.numberOfFailed++;
-                    if (numberOfFailed == 3)
-
-                    {
-                        fallBackScenario();
-                    }
-                }
-            }
-        }
-        #endregion
-
         
-
-
-
-
-
-        #region Innitial Load methods
-
-        private async void LoadRecognitionAsync(bool phonemeRecognitionEnabled)
+        #region FoundText
+        private void FoundText()
         {
-            isPhonemeRecognitionEnabled = phonemeRecognitionEnabled;
-
-            ContentPanel.IsHitTestVisible = false;
-
-            plate1.Visibility = Visibility.Collapsed;
-            stateMessage.Text = "Sedang memuat komponen speech recognition";
-
-
-            //// Initializing
-            await InitialzeSpeechRecognizerForContinuous();
-            SetRecognizerMode(Mode);
-
-
-            //// UI            
-            ContentPanel.IsHitTestVisible = true;
-            plate1.Visibility = Visibility.Visible;
-            stateMessage.Text = "";
-
-            // Set innitial UI state
-            if (!isPhonemeRecognitionEnabled)
-            {
-                Mode = RecognizerMode.Digits;
-            }
-
-
-        }
-
-
-
-        
-        #region Common Methods
-
-        private void SetRecognizerMode(RecognizerMode mode)
-        {
-            try
-            {
-                string result = string.Empty;
-                speechRecognizer.StopProcessing();
-                Debug.WriteLine(result);
-                result = speechRecognizer.SetSearch(mode.ToString());
-                Debug.WriteLine(result);
-                speechRecognizer.StartProcessing();
-                Debug.WriteLine(result);
-
-            }
-            catch (Exception ex)
-            {
-                stateMessage.Text = ex.Message;
-            }
-
-            //ModeMessageBlock.Text = string.Format("running '{0}' mode", mode);
-        }
-
-        private void FoundText(string recognizedText)
-        {
-            resultText.Text = recognizedText;
+            speechRecognizer.StopProcessing();
             StopNativeRecorder();
+            //speechRecognizer.CleanPocketSphinx();
+
 
             usingSpeech();
+
 
             //MainMessageBlock.Text = recognizedText;
         }
@@ -1396,58 +172,6 @@ namespace Spico
         #endregion
 
         #region SpeechRecognizer Methods (PocketSphinx) - Continuous
-
-        private async Task InitialzeSpeechRecognizerForContinuous()
-        {
-            List<string> initResults = new List<string>();
-
-            try
-            {
-                AudioContainer.SphinxSpeechRecognizer = new SpeechRecognizer();
-                speechRecognizer = AudioContainer.SphinxSpeechRecognizer;
-
-                speechRecognizer.resultFound += speechRecognizer_resultFound;
-                speechRecognizer.resultFinalizedBySilence += speechRecognizer_resultFinalizedBySilence;
-
-                if (!isPhonemeRecognitionEnabled)
-                {
-                    await Task.Run(() =>
-                    {
-                        var initResult = speechRecognizer.Initialize("\\Assets\\models\\hmm\\en-us", "\\Assets\\models\\dict\\cmu07a.dic");
-                        initResults.Add(initResult);
-                        initResult = speechRecognizer.AddKeyphraseSearch(RecognizerMode.Wakeup.ToString(), WakeupText);
-                        initResults.Add(initResult);
-                        initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Menu.ToString(), "\\Assets\\models\\grammar\\menu.gram");
-                        initResults.Add(initResult);
-                        initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Digits.ToString(), "\\Assets\\models\\grammar\\digits.gram");
-                        initResults.Add(initResult);
-                        initResult = speechRecognizer.AddNgramSearch("forecast", "\\Assets\\models\\lm\\weather.dmp");
-                        initResults.Add(initResult);
-                        SpeechRecognizerInitiated.isInitiated = true;
-                    });
-                }
-                else
-                {
-                    await Task.Run(() =>
-                    {
-                        var initResult = speechRecognizer.InitializePhonemeRecognition("\\Assets\\models\\hmm\\en-us");
-                        initResults.Add(initResult);
-                        initResult = speechRecognizer.AddPhonesSearch(RecognizerMode.Phones.ToString(), "\\Assets\\models\\lm\\en-us-phone.lm.bin");
-                        initResults.Add(initResult);
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                var initResult = ex.Message;
-                initResults.Add(initResult);
-            }
-
-            foreach (var result in initResults)
-            {
-                Debug.WriteLine(result);
-            }
-        }
 
         private void StartSpeechRecognizerProcessing()
         {
@@ -1464,7 +188,7 @@ namespace Spico
                 {
                     result = speechRecognizer.StartProcessing();
                 }
-                
+
 
             }
             catch
@@ -1482,7 +206,7 @@ namespace Spico
             try
             {
                 result = speechRecognizer.StopProcessing();
-                
+
 
             }
             catch
@@ -1496,13 +220,14 @@ namespace Spico
         void speechRecognizer_resultFinalizedBySilence(string finalResult)
         {
             Debug.WriteLine("final result found: {0}", finalResult);
-            FoundText(finalResult);
+            FilterResult(finalResult);
+            FoundText();
         }
 
         void speechRecognizer_resultFound(string result)
         {
             Debug.WriteLine("result found: {0}", result);
-         
+
         }
 
         #endregion
@@ -1550,9 +275,9 @@ namespace Spico
             }
             else if (mainPivot.SelectedIndex == 4)
             {
-                plate4.Visibility = Visibility.Collapsed;
-                speech4.Visibility = Visibility.Visible;
-                textSpeech4.Visibility = Visibility.Visible;
+                plate5.Visibility = Visibility.Collapsed;
+                speech5.Visibility = Visibility.Visible;
+                textSpeech5.Visibility = Visibility.Visible;
             }
             else if (mainPivot.SelectedIndex == 5)
             {
@@ -1855,9 +580,1690 @@ namespace Spico
             // incoming raw sound
             //Debug.WriteLine("{0} bytes of raw audio recieved, {1} frames processed at PocketSphinx", e.Data.Length, registerResult);
         }
-
+        #endregion
         #endregion
 
+
+
+
+
+        #region No using speech
+        private void notUsingSpeech()
+        {
+           
+
+            if (mainPivot.SelectedIndex == 0)
+            {
+                
+                if (resultText.Text == "12")
+                {
+                    playSound_RightAnswer();
+                    Answers.countRightAnswer++;
+                    MainPage.numberOfFailed = 0;
+                    
+                    
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=0", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 1)
+            {
+
+                
+                if (resultText.Text == "8" || resultText.Text == "3")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "8")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
+
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 2)
+            {
+               
+                if (resultText.Text == "6" ||  resultText.Text == "5")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "enam" || resultText.Text == "6")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 3)
+            {
+                
+                if (resultText.Text == "29" || resultText.Text == "70")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "29")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 4)
+            {
+               
+                if (resultText.Text == "57" || resultText.Text == "35")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "57")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
+
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 5)
+            {
+                
+                if (resultText.Text == "5" || resultText.Text == "2")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "5")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 6)
+            {
+                
+                if (resultText.Text == "3" || resultText.Text == "5")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "3")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 7)
+            {
+               
+                if (resultText.Text == "15" || resultText.Text == "17")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "15")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 8)
+            {
+               
+                if (resultText.Text == "74" || resultText.Text == "21")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "74")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 9)
+            {
+                
+                if (resultText.Text == "2" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "2")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 10)
+            {
+               
+                if (resultText.Text == "6" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "6")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 11)
+            {
+               
+                if (resultText.Text == "97" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "97")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 12)
+            {
+                
+                if (resultText.Text == "45" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "45")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 13)
+            {
+              
+                if (resultText.Text == "5" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer(); 
+                    if (resultText.Text == "5")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    } else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 14)
+            {
+               
+                if (resultText.Text == "7" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "7")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 15)
+            {
+                
+                if (resultText.Text == "16" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "16")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 16)
+            {
+               
+                if (resultText.Text == "73" || resultText.Text == "tidak ada")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "73")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 17)
+            {
+
+                if (resultText.Text == "" || resultText.Text == "5")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 18)
+            {
+                
+                if (resultText.Text == "" || resultText.Text == "2")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 19)
+            {
+              
+                if (resultText.Text == "" || resultText.Text == "45")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 20)
+            {
+
+                if (resultText.Text == "" || resultText.Text == "73")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 21)
+            {
+               
+                if (resultText.Text == "26" || resultText.Text == "6" || resultText.Text == "2")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "26")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "6")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "2")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 22)
+            {
+               
+                if (resultText.Text == "42" || resultText.Text == "2" || resultText.Text == "4")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "42")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "2")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "4")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 23)
+            {
+                
+                if (resultText.Text == "35" || resultText.Text == "5" || resultText.Text == "3")
+                {
+                    playSound_RightAnswer();
+                    if (resultText.Text == "35")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "5")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "3")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+            else if (mainPivot.SelectedIndex == 24)
+            {
+                
+                if (resultText.Text == "96" || resultText.Text == "6" || resultText.Text == "9")
+                {
+                    playSound_RightAnswer();
+
+                    countFinalAnswer finalAnswer = new countFinalAnswer();
+
+                    if (resultText.Text == "96")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "6")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "9")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+
+                    finalAnswer.numberRightAnswer = Answers.countRightAnswer;
+                    finalAnswer.numberPossibleNormal = Answers.absolutelyNormal;
+                    finalAnswer.numberPossibleProtan = Answers.possibleProtan;
+                    finalAnswer.numberPossibleDeutan = Answers.possibleDeutan;
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=25", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
+
+                }
+            }
+        }
+        #endregion
+
+        private void fallBackScenario()
+        {
+            isSpeechActived = false;
+            BitmapImage bm = new BitmapImage(new Uri(@"Assets/Sent-96.png", UriKind.RelativeOrAbsolute));
+            micType.Source = bm;
+            resultText.Text = "";
+            resultText.Focus();
+
+            resultText.IsHitTestVisible = true;
+        }
+
+        #region using speech
+        private void usingSpeech()
+        {
+
+            if (mainPivot.SelectedIndex == 0)
+            {
+                
+                if (resultText.Text == "12")
+                {
+                    Answers.countRightAnswer++;
+                    MainPage.numberOfFailed = 0;
+                    isSpeechActived = true;
+                    playSound_RightAnswer();
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=1", UriKind.RelativeOrAbsolute));
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if(numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 1)
+            {
+                if (resultText.Text == "8" || resultText.Text == "3")
+                {
+                    if (resultText.Text == "8")
+                    {
+                        Answers.countRightAnswer++;
+                        isSpeechActived = true;
+                        playSound_RightAnswer();
+
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    MainPage.numberOfFailed = 0;
+
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
+
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 2)
+            {
+               if (resultText.Text == "6" || resultText.Text == "5")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
+
+                    if (resultText.Text == "6")
+                    {
+                        Answers.countRightAnswer++;
+
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=3", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 3)
+            {
+                if (resultText.Text == "29" || resultText.Text == "70")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "29")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=4", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 4)
+            {
+                if (resultText.Text == "57" || resultText.Text == "35")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "57")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=5", UriKind.RelativeOrAbsolute));
+
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 5)
+            {
+                if (resultText.Text == "5" || resultText.Text == "2")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "5")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=6", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 6)
+            {
+                if (resultText.Text == "3" || resultText.Text == "5")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "3")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=7", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 7)
+            {
+                if (resultText.Text == "15" || resultText.Text == "17")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "15")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=8", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 8)
+            {
+                if (resultText.Text == "74" || resultText.Text == "21")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "74")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=9", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 9)
+            {
+                if (resultText.Text == "2" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "2")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=10", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 10)
+            {
+                if (resultText.Text == "6" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "6")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=11", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 11)
+            {
+                if (resultText.Text == "97" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "97")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=12", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 12)
+            {
+                if (resultText.Text == "45" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "45")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=13", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 13)
+            {
+                if (resultText.Text == "5" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "5")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=14", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 14)
+            {
+                 if (resultText.Text == "7" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "7")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=15", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 15)
+            {
+                 if (resultText.Text == "16" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "16")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=16", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 16)
+            {
+                if (resultText.Text == "73" || resultText.Text == "tidak ada")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "73")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=17", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 17)
+            {
+                if (resultText.Text == "tidak ada" || resultText.Text == "5")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "tidak ada")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=18", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 18)
+            {
+                if (resultText.Text == "tidak ada" || resultText.Text == "2")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "tidak ada")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=19", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 19)
+            {
+               if (resultText.Text == "tidak ada" || resultText.Text == "45")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "tidak ada")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=20", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 20)
+            {
+                if (resultText.Text == "tidak ada" || resultText.Text == "73")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "tidak ada")
+                    {
+                        Answers.countRightAnswer++;
+                        
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=21", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 21)
+            {
+                if (resultText.Text == "26" || resultText.Text == "6" || resultText.Text == "2")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "26")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "6")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "2")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=22", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 22)
+            {
+                if (resultText.Text == "42" || resultText.Text == "2" || resultText.Text == "4")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "empat puluh dua")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "dua")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "empat")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=23", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 23)
+            {
+              if (resultText.Text == "35" || resultText.Text == "5" || resultText.Text == "3")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    if (resultText.Text == "tiga puluh lima")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "lima")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "tiga")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=24", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    playSound_WrongAnswer();
+
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+            else if (mainPivot.SelectedIndex == 24)
+            {
+                if (resultText.Text == "96" || resultText.Text == "6" || resultText.Text == "9")
+                {
+                    isSpeechActived = true;
+                    MainPage.numberOfFailed = 0;
+
+                    countFinalAnswer finalAnswer = new countFinalAnswer();
+
+                    if (resultText.Text == "sembilan puluh enam")
+                    {
+                        Answers.absolutelyNormal++;
+                        
+
+                    }
+                    else if (resultText.Text == "enam")
+                    {
+                        Answers.possibleProtan++;
+
+
+                    }
+                    else if (resultText.Text == "sembilan")
+                    {
+                        Answers.possibleDeutan++;
+
+
+                    }
+
+                    finalAnswer.numberRightAnswer = Answers.countRightAnswer;
+                    finalAnswer.numberPossibleNormal = Answers.absolutelyNormal;
+                    finalAnswer.numberPossibleProtan = Answers.possibleProtan;
+                    finalAnswer.numberPossibleDeutan = Answers.possibleDeutan;
+                    this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=25", UriKind.RelativeOrAbsolute));
+
+                }
+                else
+                {
+                    stateMessage.Text = "Coba lagi";
+                    MainPage.numberOfFailed++;
+                    if (numberOfFailed == 3)
+
+                    {
+                        fallBackScenario();
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region SoundEffect
         public void playSound_SpeechOn()
         {
             Stream stream = TitleContainer.OpenStream("Assets/Sound/beep_short_on.wav");
@@ -1889,46 +2295,12 @@ namespace Spico
             FrameworkDispatcher.Update();
             effect.Play();
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            if (NavigationContext.QueryString.ContainsKey("item"))
-            {
-                var index = NavigationContext.QueryString["item"];
-                var indexParsed = int.Parse(index);
-                mainPivot.SelectedIndex = indexParsed;
-            }
-        }
+        #endregion
+       
 
-        public class Answers
-        {
-            public static int countRightAnswer { get; set; }
-            public string countsRightAnswer { get; set; }
+       
 
-            public static int absolutelyNormal { get; set; }
-            public static int possibleProtan { get; set; }
-            public static int possibleDeutan { get; set; }
-            public string[] isRightAnswer { get; set; }
-        }
-        
-        public class countFinalAnswer
-        {
-            public int numberRightAnswer { get; set; }
-            public int numberPossibleNormal { get; set; }
-            public int numberPossibleProtan { get; set; }
-            public int numberPossibleDeutan { get; set; }
-        }
-
-        private void startRecognize()
-        {
-            
-                _mode = RecognizerMode.Digits;
-                LoadRecognitionAsync(false);
-           
-
-
-        }
-
+      
         private void mic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if(isSpeechActived== true)
@@ -1951,19 +2323,6 @@ namespace Spico
             {
                 notUsingSpeech();
             }
-            
-
-
-
-
-
-
-
-
-
-
-
-
         }
            
 
@@ -1996,10 +2355,6 @@ namespace Spico
 
         private void retest_Click(object sender, RoutedEventArgs e)
         {
-            Answers.countRightAnswer = 0;
-            Answers.absolutelyNormal = 0;
-            Answers.possibleDeutan = 0;
-            Answers.possibleProtan = 0;
             this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=0", UriKind.RelativeOrAbsolute));
         }
 
@@ -2017,7 +2372,13 @@ namespace Spico
 
         private void mainPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            
+            if(mainPivot.SelectedIndex == 0)
+            {
+                Answers.countRightAnswer = 0;
+                Answers.absolutelyNormal = 0;
+                Answers.possibleDeutan = 0;
+                Answers.possibleProtan = 0;
+            }
             if (mainPivot.SelectedIndex == 25 || mainPivot.SelectedIndex == 26)
             {
                 speechRow.Visibility = Visibility.Collapsed;
@@ -2091,7 +2452,36 @@ namespace Spico
             if (mainPivot.SelectedIndex == 26)
             {
                 retestGrid.Visibility = Visibility.Visible;
+                //resultPlate1.Text = Answers.answerPlate[0];
+                //resultPlate2.Text = Answers.answerPlate[1];
+                //resultPlate3.Text = Answers.answerPlate[2];
+                //resultPlate4.Text = Answers.answerPlate[3];
+                //resultPlate5.Text = Answers.answerPlate[4];
+                //resultPlate6.Text = Answers.answerPlate[5];
+                //resultPlate7.Text = Answers.answerPlate[6];
+                //resultPlate8.Text = Answers.answerPlate[7];
+                //resultPlate9.Text = Answers.answerPlate[8];
+                //resultPlate10.Text = Answers.answerPlate[9];
+                //resultPlate11.Text = Answers.answerPlate[10];
+                //resultPlate12.Text = Answers.answerPlate[11];
+                //resultPlate13.Text = Answers.answerPlate[12];
+                //resultPlate14.Text = Answers.answerPlate[13];
+                //resultPlate15.Text = Answers.answerPlate[14];
+                //resultPlate16.Text = Answers.answerPlate[15];
+                //resultPlate17.Text = Answers.answerPlate[16];
+                //resultPlate18.Text = Answers.answerPlate[17];
+                //resultPlate19.Text = Answers.answerPlate[18];
+                //resultPlate20.Text = Answers.answerPlate[19];
+                //resultPlate21.Text = Answers.answerPlate[20];
+                //resultPlate22.Text = Answers.answerPlate[21];
+                //resultPlate23.Text = Answers.answerPlate[22];
+                //resultPlate24.Text = Answers.answerPlate[23];
+                //resultPlate25.Text = Answers.answerPlate[24];
+
+
             }
+
+
         }
 
         private void settingIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
