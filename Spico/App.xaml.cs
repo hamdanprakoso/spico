@@ -128,15 +128,17 @@ namespace Spico
                 speechRecognizer = AudioContainer.SphinxSpeechRecognizer;
                      await Task.Run(() =>
                     {
-                        var initResult = speechRecognizer.Initialize("\\Assets\\models\\hmm\\en-us", "\\Assets\\models\\dict\\cmu07a.dic");
+                        //var initResult = speechRecognizer.Initialize("\\Assets\\models\\hmm\\en-us", "\\Assets\\models\\dict\\cmu07a.dic");
+                        //initResults.Add(initResult);
+                        var initResult = speechRecognizer.Initialize("\\Assets\\models\\hmm\\id-id", "\\Assets\\models\\dict\\an4.dic");
                         initResults.Add(initResult);
                         //initResult = speechRecognizer.AddKeyphraseSearch(RecognizerMode.Wakeup.ToString(), WakeupText);
                         //initResults.Add(initResult);
                         //initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Menu.ToString(), "\\Assets\\models\\grammar\\menu.gram");
                         //initResults.Add(initResult);
-                        initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Digits.ToString(), "\\Assets\\models\\grammar\\digits.gram");
+                        initResult = speechRecognizer.AddGrammarSearch("angka", "\\Assets\\models\\grammar\\digits.gram");
                         initResults.Add(initResult);
-                        //initResult = speechRecognizer.AddNgramSearch("forecast", "\\Assets\\models\\lm\\weather.dmp");
+                        //initResult = speechRecognizer.AddNgramSearch("angka", "\\Assets\\models\\lm\\an4.DMP");
                         //initResults.Add(initResult);
                     });
             }

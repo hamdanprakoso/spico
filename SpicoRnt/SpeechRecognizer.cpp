@@ -148,9 +148,9 @@ Platform::String^ SpeechRecognizer::Initialize(Platform::String^ hmmFilePath, Pl
 	config = cmd_ln_init(NULL, ps_args(), TRUE,
 		"-hmm", hmmPath,
 		"-dict", dictPath,
-		"-mmap", "no",
+		"-mmap", "yes",
 		"-logfn", logPath,
-		"-kws_threshold", "1e-40",
+		"-kws_threshold", "1.000000e+00",
 		NULL);
 
 	// Cleanup

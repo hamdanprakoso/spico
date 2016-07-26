@@ -136,23 +136,515 @@ namespace Spico
                 mainPivot.SelectedIndex = indexParsed;
             }
         }
+        #endregion
 
 
         #region SpeechRecognizer & Audio
 
         public void FilterResult(string recognizedSpeech)
         {
-            if(mainPivot.SelectedIndex ==0)
+            if (mainPivot.SelectedIndex == 0)
             {
-               if (recognizedSpeech.Contains("one two")){
+                if (recognizedSpeech.Contains("one two") || recognizedSpeech.Contains("dua belas") || recognizedSpeech.Contains("twelve")) {
                     resultText.Text = "12";
                 }
                 else
                 {
                     resultText.Text = "Gagal mengenal angka";
                 }
+            } else if (mainPivot.SelectedIndex == 1)
+            {
+                if (recognizedSpeech.Contains("eight") || recognizedSpeech.Contains("delapan") || recognizedSpeech.Contains("three") || recognizedSpeech.Contains("tiga"))
+                {
+                    if (recognizedSpeech.Contains("eight") || recognizedSpeech.Contains("delapan"))
+                    {
+                        resultText.Text = "8";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "3";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            } else if (mainPivot.SelectedIndex == 2)
+            {
+                if (recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam") || recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                {
+                    if (recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam"))
+                    {
+                        resultText.Text = "6";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "5";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            } else if (mainPivot.SelectedIndex == 3)
+            {
+                if (recognizedSpeech.Contains("two nine") || recognizedSpeech.Contains("dua puluh sembilan") || recognizedSpeech.Contains("seven zero") || recognizedSpeech.Contains("tujuh puluh"))
+                {
+                    if (recognizedSpeech.Contains("two nine") || recognizedSpeech.Contains("dua puluh sembilan"))
+                    {
+                        resultText.Text = "29";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "70";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
             }
-            
+            else if (mainPivot.SelectedIndex == 4)
+            {
+                if (recognizedSpeech.Contains("five seven") || recognizedSpeech.Contains("lima puluh tujuh") || recognizedSpeech.Contains("three five") || recognizedSpeech.Contains("tiga puluh lima"))
+                {
+                    if (recognizedSpeech.Contains("five seven") || recognizedSpeech.Contains("lima puluh tujuh"))
+                    {
+                        resultText.Text = "57";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "35";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 5)
+            {
+                if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima") || recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua"))
+                {
+                    if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                    {
+                        resultText.Text = "5";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "2";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 6)
+            {
+                if (recognizedSpeech.Contains("three") || recognizedSpeech.Contains("tiga") || recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                {
+                    if (recognizedSpeech.Contains("three") || recognizedSpeech.Contains("tiga"))
+                    {
+                        resultText.Text = "3";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "5";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 7)
+            {
+                if (recognizedSpeech.Contains("one five") || recognizedSpeech.Contains("lima belas") || recognizedSpeech.Contains("one seven") || recognizedSpeech.Contains("tujuh belas"))
+                {
+                    if (recognizedSpeech.Contains("one five") || recognizedSpeech.Contains("lima belas"))
+                    {
+                        resultText.Text = "15";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "17";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 8)
+            {
+                if (recognizedSpeech.Contains("seven four") || recognizedSpeech.Contains("tujuh puluh empat") || recognizedSpeech.Contains("two one") || recognizedSpeech.Contains("dua puluh satu"))
+                {
+                    if (recognizedSpeech.Contains("seven four") || recognizedSpeech.Contains("tujuh puluh empat"))
+                    {
+                        resultText.Text = "74";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "21";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 9)
+            {
+                if (recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua"))
+                    {
+                        resultText.Text = "2";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 10)
+            {
+                if (recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam"))
+                    {
+                        resultText.Text = "6";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 11)
+            {
+                if (recognizedSpeech.Contains("nine seven") || recognizedSpeech.Contains("sembilan puluh tujuh") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("nine seven") || recognizedSpeech.Contains("sembilan puluh tujuh"))
+                    {
+                        resultText.Text = "97";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 12)
+            {
+                if (recognizedSpeech.Contains("four five") || recognizedSpeech.Contains("empat puluh lima") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("four five") || recognizedSpeech.Contains("empat puluh lima"))
+                    {
+                        resultText.Text = "45";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 13)
+            {
+                if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                    {
+                        resultText.Text = "5";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 14)
+            {
+                if (recognizedSpeech.Contains("seven") || recognizedSpeech.Contains("tujuh") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("seven") || recognizedSpeech.Contains("tujuh"))
+                    {
+                        resultText.Text = "7";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 15)
+            {
+                if (recognizedSpeech.Contains("one six") || recognizedSpeech.Contains("enam belas") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("one six") || recognizedSpeech.Contains("enam belas"))
+                    {
+                        resultText.Text = "16";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 16)
+            {
+                if (recognizedSpeech.Contains("seven three") || recognizedSpeech.Contains("tujuh puluh tiga") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("seven three") || recognizedSpeech.Contains("tujuh puluh tiga"))
+                    {
+                        resultText.Text = "73";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 17)
+            {
+                if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                    {
+                        resultText.Text = "5";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 18)
+            {
+                if (recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua"))
+                    {
+                        resultText.Text = "2";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 19)
+            {
+                if (recognizedSpeech.Contains("four five") || recognizedSpeech.Contains("empat puluh lima") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("four five") || recognizedSpeech.Contains("empat puluh lima"))
+                    {
+                        resultText.Text = "45";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 20)
+            {
+                if (recognizedSpeech.Contains("seven three") || recognizedSpeech.Contains("tujuh puluh tiga") || recognizedSpeech.Contains("zero") || recognizedSpeech.Contains("tidak ada"))
+                {
+                    if (recognizedSpeech.Contains("seven three") || recognizedSpeech.Contains("tujuh puluh tiga"))
+                    {
+                        resultText.Text = "73";
+
+                    }
+                    else
+                    {
+                        resultText.Text = "tidak ada";
+
+                    }
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 21)
+            {
+                if (recognizedSpeech.Contains("two six") || recognizedSpeech.Contains("dua puluh enam") || recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua") || recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam"))
+                {
+                    if (recognizedSpeech.Contains("two six") || recognizedSpeech.Contains("dua puluh enam"))
+                    {
+                        resultText.Text = "26";
+
+                    } else if ((recognizedSpeech.Contains("two") && !recognizedSpeech.Contains("six")) || (recognizedSpeech.Contains("dua") && !recognizedSpeech.Contains("enam")))
+                    {
+                        resultText.Text = "2";
+                    } else if ((recognizedSpeech.Contains("six") && !recognizedSpeech.Contains("two")) || (recognizedSpeech.Contains("enam") && !recognizedSpeech.Contains("dua")))
+                    {
+                        resultText.Text = "6";
+                    }
+
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 22)
+            {
+                if (recognizedSpeech.Contains("four two") || recognizedSpeech.Contains("empat puluh dua") || recognizedSpeech.Contains("four") || recognizedSpeech.Contains("empat") || recognizedSpeech.Contains("two") || recognizedSpeech.Contains("dua"))
+                {
+                    if (recognizedSpeech.Contains("four two") || recognizedSpeech.Contains("empat puluh dua"))
+                    {
+                        resultText.Text = "42";
+
+                    }
+                    else if ((recognizedSpeech.Contains("two") && !recognizedSpeech.Contains("four")) || (recognizedSpeech.Contains("dua") && !recognizedSpeech.Contains("empat")))
+                    {
+                        resultText.Text = "2";
+                    }
+                    else if ((recognizedSpeech.Contains("four") && !recognizedSpeech.Contains("two")) || (recognizedSpeech.Contains("empat") && !recognizedSpeech.Contains("dua")))
+                    {
+                        resultText.Text = "4";
+                    }
+
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 23)
+            {
+                if (recognizedSpeech.Contains("three five") || recognizedSpeech.Contains("tiga puluh lima") || recognizedSpeech.Contains("three") || recognizedSpeech.Contains("tiga") || recognizedSpeech.Contains("five") || recognizedSpeech.Contains("lima"))
+                {
+                    if (recognizedSpeech.Contains("three five") || recognizedSpeech.Contains("tiga puluh lima"))
+                    {
+                        resultText.Text = "35";
+
+                    }
+                    else if ((recognizedSpeech.Contains("three") && !recognizedSpeech.Contains("five")) || (recognizedSpeech.Contains("tiga") && !recognizedSpeech.Contains("lima")))
+                    {
+                        resultText.Text = "3";
+                    }
+                    else if ((recognizedSpeech.Contains("five") && !recognizedSpeech.Contains("three")) || (recognizedSpeech.Contains("lima") && !recognizedSpeech.Contains("tiga")))
+                    {
+                        resultText.Text = "5";
+                    }
+
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+            else if (mainPivot.SelectedIndex == 24)
+            {
+                if (recognizedSpeech.Contains("nine six") || recognizedSpeech.Contains("sembilan puluh enam") || recognizedSpeech.Contains("nine") || recognizedSpeech.Contains("sembilan") || recognizedSpeech.Contains("six") || recognizedSpeech.Contains("enam"))
+                {
+                    if (recognizedSpeech.Contains("nine six") || recognizedSpeech.Contains("sembilan puluh enam"))
+                    {
+                        resultText.Text = "96";
+
+                    }
+                    else if ((recognizedSpeech.Contains("nine") && !recognizedSpeech.Contains("six")) || (recognizedSpeech.Contains("sembilan") && !recognizedSpeech.Contains("enam")))
+                    {
+                        resultText.Text = "9";
+                    }
+                    else if ((recognizedSpeech.Contains("six") && !recognizedSpeech.Contains("nine")) || (recognizedSpeech.Contains("enam") && !recognizedSpeech.Contains("sembilan")))
+                    {
+                        resultText.Text = "6";
+                    }
+
+                }
+                else
+                {
+                    resultText.Text = "Gagal mengenal angka";
+                }
+            }
+
         }
         
         #region FoundText
@@ -1414,7 +1906,6 @@ namespace Spico
                     {
                         Answers.countRightAnswer++;
                         isSpeechActived = true;
-                        playSound_RightAnswer();
 
 
 
@@ -1425,6 +1916,7 @@ namespace Spico
 
                     }
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     this.NavigationService.Navigate(new Uri("/MainPage.xaml?item=2", UriKind.RelativeOrAbsolute));
 
@@ -1484,6 +1976,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "29")
                     {
@@ -1518,6 +2011,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "57")
                     {
@@ -1553,6 +2047,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "5")
                     {
@@ -1587,6 +2082,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "3")
                     {
@@ -1621,6 +2117,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "15")
                     {
@@ -1655,6 +2152,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "74")
                     {
@@ -1689,6 +2187,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "2")
                     {
@@ -1723,6 +2222,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "6")
                     {
@@ -1757,6 +2257,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "97")
                     {
@@ -1791,6 +2292,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "45")
                     {
@@ -1825,6 +2327,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "5")
                     {
@@ -1859,6 +2362,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "7")
                     {
@@ -1893,6 +2397,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "16")
                     {
@@ -1927,6 +2432,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "73")
                     {
@@ -1961,6 +2467,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "tidak ada")
                     {
@@ -1995,6 +2502,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "tidak ada")
                     {
@@ -2029,6 +2537,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "tidak ada")
                     {
@@ -2064,6 +2573,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "tidak ada")
                     {
@@ -2097,6 +2607,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "26")
                     {
@@ -2138,6 +2649,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "empat puluh dua")
                     {
@@ -2179,6 +2691,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     if (resultText.Text == "tiga puluh lima")
                     {
@@ -2220,6 +2733,7 @@ namespace Spico
                 {
                     isSpeechActived = true;
                     MainPage.numberOfFailed = 0;
+                    playSound_RightAnswer();
 
                     countFinalAnswer finalAnswer = new countFinalAnswer();
 
@@ -2497,4 +3011,3 @@ namespace Spico
         }
     }
 }
-#endregion

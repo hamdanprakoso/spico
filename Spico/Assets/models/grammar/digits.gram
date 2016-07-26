@@ -2,16 +2,21 @@
 
 grammar digits;
 
-<digit> = oh    |
-          zero  |
-          one   |
-          two   |
-          three |
-          four  |
-          five  |
-          six   |
-          seven |
-          eight |
-          nine  ;
+<digit> = satu  |
+          dua   |
+          tiga   |
+          empat |
+          lima  |
+          enam  |
+          tujuh   |
+          delapan |
+          sembilan |
+          sepuluh  |
+		  sebelas|
+		  puluh|
+		  belas|
+		  ya|
+		  tidak|
+		  ada;
 
 public <digits> = <digit>+;
