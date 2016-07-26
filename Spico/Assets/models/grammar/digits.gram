@@ -2,21 +2,15 @@
 
 grammar digits;
 
-<digit> = satu  |
-          dua   |
-          tiga   |
-          empat |
-          lima  |
-          enam  |
-          tujuh   |
-          delapan |
-          sembilan |
-          sepuluh  |
-		  sebelas|
-		  puluh|
-		  belas|
-		  ya|
-		  tidak|
-		  ada;
+<digit> = zero  |
+          one   |
+          two   |
+          three |
+          four |
+          five  |
+          six   |
+          seven |
+          eight |
+          nine  ;
 
 public <digits> = <digit>+;

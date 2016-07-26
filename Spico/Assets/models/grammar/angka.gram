@@ -1,0 +1,22 @@
+#JSGF V1.0;
+
+grammar angka;
+
+<satuan> = satu  |
+          dua   |
+          tiga   |
+          empat |
+          lima  |
+          enam  |
+          tujuh   |
+          delapan |
+          sembilan |
+          sepuluh  |
+		  sebelas|
+		  puluh|
+		  belas|
+		  ya|
+		  tidak|
+		  ada;
+
+public <angka> = <satuan>+;

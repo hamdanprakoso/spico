@@ -107,6 +107,8 @@ err_msg(err_lvl_t lvl, const char *path, long ln, const char *fmt, ...)
     } else {
         err_cb(err_user_data, lvl, "%s", msg);
     }
+
+
 }
 
 #ifdef _WIN32_WCE /* No strerror for WinCE, so a separate implementation */
@@ -186,6 +188,8 @@ err_msg_system(err_lvl_t lvl, const char *path, long ln, const char *fmt, ...)
     } else {
         err_cb(err_user_data, lvl, "%s: %s\n", msg, strerror(local_errno));
     }
+
+
 }
 #endif
 

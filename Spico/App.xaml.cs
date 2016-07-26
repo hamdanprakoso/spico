@@ -134,11 +134,10 @@ namespace Spico
                         initResults.Add(initResult);
                         //initResult = speechRecognizer.AddKeyphraseSearch(RecognizerMode.Wakeup.ToString(), WakeupText);
                         //initResults.Add(initResult);
-                        //initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Menu.ToString(), "\\Assets\\models\\grammar\\menu.gram");
-                        //initResults.Add(initResult);
-                        initResult = speechRecognizer.AddGrammarSearch("angka", "\\Assets\\models\\grammar\\digits.gram");
+                        initResult = speechRecognizer.AddGrammarSearch(RecognizerMode.Digits.ToString(), "\\Assets\\models\\grammar\\angka.gram");
                         initResults.Add(initResult);
-                        //initResult = speechRecognizer.AddNgramSearch("angka", "\\Assets\\models\\lm\\an4.DMP");
+
+                        //initResult = speechRecognizer.AddNgramSearch(RecognizerMode.Digits.ToString(), "\\Assets\\models\\lm\\an4.lm");
                         //initResults.Add(initResult);
                     });
             }
